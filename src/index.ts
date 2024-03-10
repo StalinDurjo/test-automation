@@ -1,6 +1,3 @@
-import { testConfig } from "test.config.js";
+import { initialize } from "./core/runner/initialize.js";
 
-// import { testConfig } from "../test.config.js";
-
-console.log("Test!");
-console.log(testConfig);
+initialize();
