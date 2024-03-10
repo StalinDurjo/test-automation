@@ -1,0 +1,5 @@
+{
+  "watch": ["./src", "./test.config.ts"],
+  "ext": ".ts,.js,.mts,.mjs",
+  "exec": "npx tsx ./src/index.ts"
+}
