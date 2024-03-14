@@ -47,7 +47,8 @@ export const getAllConfigurations = () => {
 };
 
 export const getAllDockerWordpressProjects = () => {
-  const db = connect();
+  let db: LowSync<Database>;
+  db = connect();
   db.read();
   return db.data.virtualProjects.dockerWordpressProjects;
 };

@@ -9,19 +9,19 @@ export default defineConfig({
     dockerWordpressProjects: [
       {
         projectName: "wp-1",
-        wordpressVersion: "",
-        mysqlVersion: "",
-        wordpressPort: 8081,
-        mysqlPort: 3607,
+        wordpressVersion: "6.2.2-apache",
+        mysqlVersion: "8.1",
+        wordpressPort: 8084,
+        mysqlPort: 3308,
         plugins: [],
         themes: []
       },
       {
         projectName: "wp-2",
-        wordpressVersion: "",
-        mysqlVersion: "",
-        wordpressPort: 8081,
-        mysqlPort: 3607,
+        wordpressVersion: "6.2.2-apache",
+        mysqlVersion: "8.1",
+        wordpressPort: 8085,
+        mysqlPort: 3309,
         plugins: [],
         themes: []
       }

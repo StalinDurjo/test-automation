@@ -2,12 +2,19 @@ import { getAllDockerWordpressProjects } from "@src/core/database.js";
 import { WP_DIR } from "@src/helper/directory.js";
 import { createDirectorySync, createFileSync, deleteFileSync, isDirectoryPresentSync, isFilePresentSync, overwriteFileContentSync, writeToFileSync } from "@src/libs/file.js";
 import { addDockerWordpressProjectsToDatabase } from "./processConfig.js";
-import { dockerComposeContent } from "./dockerComposeTemplate.js";
+import { dockerComposeContent, dockerComposeTemplate } from "./dockerComposeTemplate.js";
 
-const dockerWordpressProjects = getAllDockerWordpressProjects();
+export const createDockerWordpressResources = () => {
+  addDockerWordpressProjectsToDatabase();
+  createWpDirectory();
+  createWordpressProjectDirectory();
+  createDockerComposeFiles();
+  createWordpressProjectEnvFiles();
+  createDockerExecutableShellScripts();
+};
 
 // create wp directory if not created
-export const createWpDirectory = () => {
+const createWpDirectory = () => {
   if (!isDirectoryPresentSync(WP_DIR)) {
     const isDirectoryCreated = createDirectorySync(WP_DIR);
     if (isDirectoryCreated) {
@@ -16,9 +23,9 @@ export const createWpDirectory = () => {
   }
 };
 
-export const createWordpressProjectDirectory = () => {
+const createWordpressProjectDirectory = () => {
   if (isDirectoryPresentSync(WP_DIR)) {
-    const environmentConfigList = dockerWordpressProjects;
+    const environmentConfigList = getAllDockerWordpressProjects();
 
     for (const envConfig of environmentConfigList) {
       if (!isDirectoryPresentSync(envConfig.projectDirectory)) {
@@ -31,8 +38,8 @@ export const createWordpressProjectDirectory = () => {
   }
 };
 
-export const createDockerComposeFiles = () => {
-  const environmentConfigList = dockerWordpressProjects;
+const createDockerComposeFiles_deprecated = () => {
+  const environmentConfigList = getAllDockerWordpressProjects();
 
   for (const envConfig of environmentConfigList) {
     if (isDirectoryPresentSync(envConfig.projectDirectory)) {
@@ -50,8 +57,38 @@ export const createDockerComposeFiles = () => {
   }
 };
 
-export const createWordpressProjectEnvFiles = () => {
-  const environmentConfigList = dockerWordpressProjects;
+const createDockerComposeFiles = () => {
+  const environmentConfigList = getAllDockerWordpressProjects();
+
+  for (const envConfig of environmentConfigList) {
+    if (isDirectoryPresentSync(envConfig.projectDirectory)) {
+      const fileName = "docker-compose.yml";
+      const fullFilePath = `${envConfig.projectDirectory}/${fileName}`;
+
+      if (!isFilePresentSync(fullFilePath)) {
+        createFileSync(fileName, envConfig.projectDirectory);
+        writeToFileSync(
+          fullFilePath,
+          dockerComposeTemplate({
+            wordpressVersion: envConfig.wordpressVersion,
+            mysqlVersion: envConfig.mysqlVersion,
+            wordpressPort: envConfig.wordpressPort,
+            databasePort: envConfig.mysqlPort,
+            mysqlDatabase: "wordpress",
+            mysqlUser: "wp_user",
+            mysqlPassword: "wp_password",
+            mysqlRootPassword: "MYSQL_ROOT_PASSWORD"
+          })
+        );
+      }
+    } else {
+      console.log(`Failed to create docker compose file. Could not locate project directory: "${envConfig.projectDirectory}"`);
+    }
+  }
+};
+
+const createWordpressProjectEnvFiles = () => {
+  const environmentConfigList = getAllDockerWordpressProjects();
 
   for (const envConfig of environmentConfigList) {
     if (isDirectoryPresentSync(envConfig.projectDirectory)) {
@@ -78,8 +115,8 @@ export const createWordpressProjectEnvFiles = () => {
   }
 };
 
-export const deleteWordpressProjectEnvFiles = () => {
-  const environmentConfigList = dockerWordpressProjects;
+const deleteWordpressProjectEnvFiles = () => {
+  const environmentConfigList = getAllDockerWordpressProjects();
 
   for (const envConfig of environmentConfigList) {
     if (isDirectoryPresentSync(envConfig.projectDirectory)) {
@@ -93,8 +130,8 @@ export const deleteWordpressProjectEnvFiles = () => {
   }
 };
 
-export const createDockerExecutableShellScripts = () => {
-  const environmentConfigList = dockerWordpressProjects;
+const createDockerExecutableShellScripts = () => {
+  const environmentConfigList = getAllDockerWordpressProjects();
 
   for (const envConfig of environmentConfigList) {
     if (isDirectoryPresentSync(envConfig.projectDirectory)) {
