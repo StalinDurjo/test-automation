@@ -10,7 +10,8 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@src/*": ["src/*"]
+      "@src/*": ["src/*"],
+      "@testConfig/*": ["test.config.ts"]
     }
   },
   "include": ["src/**/*", "test.config.ts"],

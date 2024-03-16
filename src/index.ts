@@ -1,6 +1,10 @@
-import { testConfig } from "test.config.js";
+import environmentController from "./controllers/EnvironmentController.js";
+import testController from "./controllers/TestController.js";
 
-// import { testConfig } from "../test.config.js";
-
-console.log("Test!");
-console.log(testConfig);
+environmentController.addProjectsToDatabase();
+environmentController.createResources();
+environmentController.startDocker((status) => {
+  if (status === true) {
+    testController.start();
+  }
+});
