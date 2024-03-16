@@ -4,6 +4,10 @@ export interface TestConfiguration {
   e2e: {};
   api: {};
   virtualTestEnvironments: VirtualTestEnvironments;
+  debugger: {
+    isEnabled: boolean;
+    allowDockerEnvCreation: boolean;
+  };
 }
 
 export interface VirtualTestEnvironments {

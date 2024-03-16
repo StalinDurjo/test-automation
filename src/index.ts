@@ -1,25 +1,10 @@
-import { initialize } from "./core/runner/initialize.js";
-import { dockerActiveContainerList, getDockerContainersByNetwork, isDockerWordpressProjectReady, startDockerEnvironment } from "./services/virtual_env/dockerEnv.js";
-// initialize();
+import environmentController from "./controllers/EnvironmentController.js";
+import testController from "./controllers/TestController.js";
 
-// startDockerEnvironment();
-
-// (async () => {
-//   console.log(await isDockerWordpressProjectReady());
-// })();
-
-import Dockerode from "dockerode";
-
-// Create a new Docker instance
-
-// getDockerContainersByNetwork("wp_1_wordpress-network").then((data) => {
-//   console.log(data);
-// });
-
-dockerActiveContainerList()
-  .then((data) => {
-    console.log(data);
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+environmentController.addProjectsToDatabase();
+environmentController.createResources();
+environmentController.startDocker((status) => {
+  if (status === true) {
+    testController.start();
+  }
+});

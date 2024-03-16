@@ -1,20 +1,25 @@
 import { getAllDockerWordpressProjects } from "@src/core/database.js";
 import { WP_DIR } from "@src/helper/directory.js";
-import { createDirectorySync, createFileSync, deleteFileSync, isDirectoryPresentSync, isFilePresentSync, overwriteFileContentSync, writeToFileSync } from "@src/libs/file.js";
+import { createDirectorySync, createFileSync, deleteFileSync, isDirectoryPresentSync, isFilePresentSync, overwriteFileContentSync, writeToFileSync } from "@src/utils/file.js";
 import { addDockerWordpressProjectsToDatabase } from "./processConfig.js";
-import { dockerComposeContent, dockerComposeTemplate } from "./dockerComposeTemplate.js";
+import { dockerComposeContent, dockerComposeTemplate } from "./_dockerComposeTemplate.js";
 
-export const createDockerWordpressResources = () => {
-  addDockerWordpressProjectsToDatabase();
-  createWpDirectory();
-  createWordpressProjectDirectory();
-  createDockerComposeFiles();
-  createWordpressProjectEnvFiles();
-  createDockerExecutableShellScripts();
+export const _createDockerWordpressResources = () => {
+  try {
+    addDockerWordpressProjectsToDatabase();
+    _createWpDirectory();
+    _createWordpressProjectDirectory();
+    _createDockerComposeFiles();
+    _createWordpressProjectEnvFiles();
+    _createDockerExecutableShellScripts();
+    console.log("Wordpress project resources created.");
+  } catch (error) {
+    console.log("Failed to create docker wordpress project resources");
+  }
 };
 
 // create wp directory if not created
-const createWpDirectory = () => {
+const _createWpDirectory = () => {
   if (!isDirectoryPresentSync(WP_DIR)) {
     const isDirectoryCreated = createDirectorySync(WP_DIR);
     if (isDirectoryCreated) {
@@ -23,7 +28,7 @@ const createWpDirectory = () => {
   }
 };
 
-const createWordpressProjectDirectory = () => {
+const _createWordpressProjectDirectory = () => {
   if (isDirectoryPresentSync(WP_DIR)) {
     const environmentConfigList = getAllDockerWordpressProjects();
 
@@ -57,7 +62,7 @@ const createDockerComposeFiles_deprecated = () => {
   }
 };
 
-const createDockerComposeFiles = () => {
+const _createDockerComposeFiles = () => {
   const environmentConfigList = getAllDockerWordpressProjects();
 
   for (const envConfig of environmentConfigList) {
@@ -87,7 +92,7 @@ const createDockerComposeFiles = () => {
   }
 };
 
-const createWordpressProjectEnvFiles = () => {
+const _createWordpressProjectEnvFiles = () => {
   const environmentConfigList = getAllDockerWordpressProjects();
 
   for (const envConfig of environmentConfigList) {
@@ -115,7 +120,7 @@ const createWordpressProjectEnvFiles = () => {
   }
 };
 
-const deleteWordpressProjectEnvFiles = () => {
+const _deleteWordpressProjectEnvFiles = () => {
   const environmentConfigList = getAllDockerWordpressProjects();
 
   for (const envConfig of environmentConfigList) {
@@ -130,7 +135,7 @@ const deleteWordpressProjectEnvFiles = () => {
   }
 };
 
-const createDockerExecutableShellScripts = () => {
+const _createDockerExecutableShellScripts = () => {
   const environmentConfigList = getAllDockerWordpressProjects();
 
   for (const envConfig of environmentConfigList) {
